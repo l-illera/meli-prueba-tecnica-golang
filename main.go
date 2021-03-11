@@ -17,21 +17,24 @@ import (
 )
 
 type Application struct {
-	router             *mux.Router
-	messageProvider    infrastructure.MessageProvider
-	satelliteProvider  infrastructure.SatelliteProvider
-	calculatePosition  usecase.CalculatePositionUsecase
-	extractInformation usecase.ExtractInformationUsecase
-	messageBuilder     usecase.MessageBuilderUsecase
-	requestExtractor   usecase.RequestExtractorUsecase
+	router                 *mux.Router
+	messageProvider        infrastructure.MessageProvider
+	satelliteProvider      infrastructure.SatelliteProvider
+	calculatePosition      usecase.CalculatePositionUsecase
+	extractInformation     usecase.ExtractInformationUsecase
+	messageBuilder         usecase.MessageBuilderUsecase
+	requestExtractor       usecase.RequestExtractorUsecase
+	topSecretResource      entrypoint.TopSecretResource
+	topSecretSplitResource entrypoint.TopSecretSplitResource
 }
 
 func main() {
 	a := Application{}
 	a.initializeSatelliteProvider()
 	a.initializeMessageProvider()
-	a.initializeRoutes()
 	a.initializeUseCases()
+	a.initializeEntrypoints()
+	a.initializeRoutes()
 	a.start()
 }
 func (a *Application) start() {
@@ -82,10 +85,8 @@ func (a *Application) TopSecretRouteSingleLoad(w http.ResponseWriter, r *http.Re
 		errorResponse(w, 404, err.Error())
 		return
 	}
-	tssr := entrypoint.TopSecretSplitResource{}
-	tssr.Initialize(a.messageProvider)
 	body.Name = name
-	response, err := tssr.LoadMessage(body)
+	response, err := a.topSecretSplitResource.LoadMessage(body)
 	if err != nil {
 		errorResponse(w, 200, "No hay suficiente informacion.")
 		return
@@ -109,11 +110,7 @@ func (a *Application) TopSecretRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	tsr := entrypoint.TopSecretResource{
-		ExtractInformation: a.extractInformation,
-		RequestExtractor:   a.requestExtractor,
-	}
-	response, err := tsr.HandleRequest(body)
+	response, err := a.topSecretResource.HandleRequest(body)
 	if err != nil {
 		errorResponse(w, 404, err.Error())
 		return
@@ -129,9 +126,7 @@ func (a *Application) TopSecretRoute(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} dto.Response
 // @Router /topsecret_split/ [get]
 func (a *Application) TopSecretSplitRoute(w http.ResponseWriter, r *http.Request) {
-	tssr := entrypoint.TopSecretSplitResource{}
-	tssr.Initialize(a.messageProvider)
-	response, err := tssr.LocateMessage()
+	response, err := a.topSecretSplitResource.LocateMessage()
 	if err != nil {
 		fmt.Printf("%s", err.Error())
 		errorResponse(w, 200, "No hay suficiente informacion.")
@@ -172,6 +167,18 @@ func (a *Application) initializeUseCases() {
 	a.extractInformation = usecase.ExtractInformationUsecase{
 		CalculatePosition: a.calculatePosition,
 		MessageBuilder:    a.messageBuilder,
+	}
+}
+
+func (a *Application) initializeEntrypoints() {
+	a.topSecretResource = entrypoint.TopSecretResource{
+		ExtractInformation: a.extractInformation,
+		RequestExtractor:   a.requestExtractor,
+	}
+	a.topSecretSplitResource = entrypoint.TopSecretSplitResource{
+		MessageProvider:    a.messageProvider,
+		ExtractInformation: a.extractInformation,
+		RequestExtractor:   a.requestExtractor,
 	}
 }
 

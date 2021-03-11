@@ -7,23 +7,19 @@ import (
 )
 
 type TopSecretSplitResource struct {
-	messageProvider    infrastructure.MessageProvider
-	extractInformation usecase.ExtractInformationUsecase
-	requestExtractor   usecase.RequestExtractorUsecase
-}
-
-func (t *TopSecretSplitResource) Initialize(provider infrastructure.MessageProvider) {
-	t.messageProvider = provider
+	MessageProvider    infrastructure.MessageProvider
+	ExtractInformation usecase.ExtractInformationUsecase
+	RequestExtractor   usecase.RequestExtractorUsecase
 }
 
 func (t *TopSecretSplitResource) LoadMessage(satellite dto.Satellite) (dto.Response, error) {
-	t.messageProvider.AddMessage(satellite)
+	t.MessageProvider.AddMessage(satellite)
 	return t.LocateMessage()
 }
 
 func (t *TopSecretSplitResource) LocateMessage() (dto.Response, error) {
-	spaceship, messages := t.requestExtractor.Process(t.messageProvider.GetMessages())
-	if result, err := t.extractInformation.Process(spaceship, messages); err == nil {
+	spaceship, messages := t.RequestExtractor.Process(t.MessageProvider.GetMessages())
+	if result, err := t.ExtractInformation.Process(spaceship, messages); err == nil {
 		return dto.Response{
 			Position: dto.Position{
 				X: result.Position.East,
