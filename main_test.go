@@ -15,8 +15,9 @@ var a Application
 func TestMain(m *testing.M) {
 	a.initializeSatelliteProvider()
 	a.initializeMessageProvider()
-	a.initializeRoutes()
 	a.initializeUseCases()
+	a.initializeEntrypoints()
+	a.initializeRoutes()
 	code := m.Run()
 	os.Exit(code)
 }
