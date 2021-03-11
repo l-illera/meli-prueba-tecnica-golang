@@ -1,0 +1,128 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Extract secret message from Spaceship",
+        "title": "Prueba Tecnica MELI - Golang",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Luis Fernando Illera Sanmartin",
+            "email": "luisfernando.illera@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/topsecret/": {
+            "post": {
+                "description": "Find the position respect all satellites of a spaceship and the message sended in various signals",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get position and message from splitted message",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/topsecret_split/": {
+            "get": {
+                "description": "Find the position respect all satellites of a spaceship and the message sended in various signals",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get position and message from splitted message",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/topsecret_split/{satellite_name}": {
+            "post": {
+                "description": "Find the position respect all satellites of a spaceship and the message sended in various signals",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get position and message from splitted message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "satellite name to register",
+                        "name": "satellite_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.Position": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "description": "X position of the spaceship",
+                    "type": "number"
+                },
+                "y": {
+                    "description": "Y position of the spaceship",
+                    "type": "number"
+                }
+            }
+        },
+        "dto.Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "position": {
+                    "$ref": "#/definitions/dto.Position"
+                }
+            }
+        }
+    }
+}

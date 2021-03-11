@@ -1,0 +1,88 @@
+basePath: /
+definitions:
+  dto.Position:
+    properties:
+      x:
+        description: X position of the spaceship
+        type: number
+      "y":
+        description: Y position of the spaceship
+        type: number
+    type: object
+  dto.Response:
+    properties:
+      message:
+        type: string
+      position:
+        $ref: '#/definitions/dto.Position'
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: luisfernando.illera@gmail.com
+    name: Luis Fernando Illera Sanmartin
+  description: Extract secret message from Spaceship
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Prueba Tecnica MELI - Golang
+  version: "1.0"
+paths:
+  /topsecret/:
+    post:
+      consumes:
+      - application/json
+      description: Find the position respect all satellites of a spaceship and the
+        message sended in various signals
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get position and message from splitted message
+  /topsecret_split/:
+    get:
+      consumes:
+      - application/json
+      description: Find the position respect all satellites of a spaceship and the
+        message sended in various signals
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: Get position and message from splitted message
+  /topsecret_split/{satellite_name}:
+    post:
+      consumes:
+      - application/json
+      description: Find the position respect all satellites of a spaceship and the
+        message sended in various signals
+      parameters:
+      - description: satellite name to register
+        in: path
+        name: satellite_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: Get position and message from splitted message
+swagger: "2.0"
