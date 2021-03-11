@@ -5,7 +5,6 @@ import (
 	"co.edu.meli/luisillera/prueba-tecnica/domain/utilities"
 	"co.edu.meli/luisillera/prueba-tecnica/infrastructure"
 	"errors"
-	"fmt"
 )
 
 type CalculatePositionUsecase struct {
@@ -24,7 +23,6 @@ func (a *CalculatePositionUsecase) Process(SpaceshipReference model.SpaceshipRef
 	if a.assertPositions(positionAlpha, positionBravo) {
 		return positionAlpha, nil
 	} else {
-		fmt.Printf("Alpha: [%s]\nBravo: [%s]\n",positionAlpha,positionBravo)
 		return model.Point{}, errors.New("Final Positions Doesn't Match.")
 	}
 }

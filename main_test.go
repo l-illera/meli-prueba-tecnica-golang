@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"co.edu.meli/luisillera/prueba-tecnica/domain/dto"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -77,28 +78,60 @@ func TestTopSecretSplitRoute_OK(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("accept", "application/json")
 	response := executeRequest(req)
+	fmt.Println("FIRST CALL: INIT")
 	checkResponseIncompleteResponse(t, response, http.StatusOK, `{"error":"No hay suficiente informacion."}`)
+	fmt.Println("FIRST CALL: END")
 	//skywalker
 	secondCallJsonStr := []byte(`{"distance":266.1,"message":["","es","","","secreto"]}`)
 	req, _ = http.NewRequest("POST", "/topsecret/skywalker", bytes.NewBuffer(secondCallJsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("accept", "application/json")
+	fmt.Println("SECOND CALL: INIT")
 	checkResponseIncompleteResponse(t, response, http.StatusOK, `{"error":"No hay suficiente informacion."}`)
+	fmt.Println("SECOND CALL: END")
 	//sato
 	thirdCallJsonStr := []byte(`{"name":"sato","distance":600.5,"message":["este","","un","",""]}`)
 	req, _ = http.NewRequest("POST", "/topsecret/sato", bytes.NewBuffer(thirdCallJsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("accept", "application/json")
+	fmt.Println("THIRD CALL: INIT")
 	checkResponseIncompleteResponse(t, response, http.StatusOK, `{"error":"No hay suficiente informacion."}`)
+	fmt.Println("THIRD CALL: END")
+}
 
+func TestTopSecretSplitRouteRead_OK(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/topsecret_split/",nil )
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("accept", "application/json")
+	response := executeRequest(req)
+	checkResponseIncompleteResponse(t, response, http.StatusOK, `{"error":"No hay suficiente informacion."}`)
+}
 
+func TestTopSecretSplitRoute_BadRequest(t *testing.T) {
+	//kenobi
+	firstCallJsonStr := []byte(`{sage":["este","","","mensaje",""]}`)
+	req, _ := http.NewRequest("POST", "/topsecret_split/kenobi", bytes.NewBuffer(firstCallJsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("accept", "application/json")
+	response := executeRequest(req)
+	checkResponseIncompleteResponse(t, response, http.StatusNotFound, `{"error":"invalid character 's' looking for beginning of object key string"}`)
+}
+
+func TestTopSecretSplitRoute_NOSatellite(t *testing.T) {
+	//kenobi
+	firstCallJsonStr := []byte(`{"distance":485.7,"message":["este","","","mensaje",""]}`)
+	req, _ := http.NewRequest("POST", "/topsecret_split/", bytes.NewBuffer(firstCallJsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("accept", "application/json")
+	response := executeRequest(req)
+	checkResponseIncompleteResponse(t, response, http.StatusMethodNotAllowed, ``)
 }
 
 func checkResponseIncompleteResponse(t *testing.T, response *httptest.ResponseRecorder, statusCode int, message string) {
-	checkResponseCode(t, http.StatusOK, response.Code)
+	checkResponseCode(t, statusCode, response.Code)
 	body := response.Body.String()
 	if body != message {
-		t.Errorf("Expected Error message [%s] Got [%s]\n", message, body)
+		t.Errorf("\nExpected Error message [%s] Got [%s]\n", message, body)
 	}
 }
 

@@ -28,7 +28,6 @@ func (s *SatelliteProvider) buildKenobi(kenobi model.Point, skywalker model.Poin
 		Skywalker:   s.calculator.Process(kenobi, skywalker),
 		Sato:        s.calculator.Process(kenobi, sato),
 	}
-	fmt.Printf("\nKENOBI %s", s.Kenobi)
 }
 
 func (s *SatelliteProvider) buildSkywalker(kenobi model.Point, skywalker model.Point, sato model.Point) {
@@ -37,7 +36,6 @@ func (s *SatelliteProvider) buildSkywalker(kenobi model.Point, skywalker model.P
 		Sato:        s.calculator.Process(skywalker, sato),
 		Kenobi:      s.calculator.Process(kenobi, skywalker),
 	}
-	fmt.Printf("\nSKYWALKER %s", s.Skywalker)
 }
 
 func (s *SatelliteProvider) buildSato(kenobi model.Point, skywalker model.Point, sato model.Point) {
@@ -46,5 +44,4 @@ func (s *SatelliteProvider) buildSato(kenobi model.Point, skywalker model.Point,
 		Skywalker:   s.calculator.Process(skywalker, sato),
 		Kenobi:      s.calculator.Process(kenobi, sato),
 	}
-	fmt.Printf("\nSATO %s", s.Sato)
 }

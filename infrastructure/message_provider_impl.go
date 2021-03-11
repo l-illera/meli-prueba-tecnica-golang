@@ -6,27 +6,27 @@ import (
 )
 
 type MessageProvider struct {
-	messages []dto.Satellite
+	Messages []dto.Satellite
 }
 
 func (m *MessageProvider) AddMessage(satellite dto.Satellite) {
 	exists := false
-	for i := 0; i < len(m.messages); i++ {
-		if strings.ToLower(m.messages[i].Name) == strings.ToLower(satellite.Name) {
-			m.messages[i] = satellite
+	for i := 0; i < len(m.Messages); i++ {
+		if strings.ToLower(m.Messages[i].Name) == strings.ToLower(satellite.Name) {
+			m.Messages[i] = satellite
 			exists = true
 			break
 		}
 	}
 	if !exists {
-		m.messages = append(m.messages, satellite)
+		m.Messages = append(m.Messages, satellite)
 	}
 }
 
 func (m *MessageProvider) GetMessages() dto.SatelliteRequest {
-	return dto.SatelliteRequest{m.messages}
+	return dto.SatelliteRequest{m.Messages}
 }
 
 func (m *MessageProvider) Initialize() {
-	m.messages = []dto.Satellite{}
+	m.Messages = []dto.Satellite{}
 }
