@@ -13,7 +13,11 @@ func (u *MessageBuilderUsecase) Process(messages [][]string) (string, error) {
 	result := make([]string, u.countArrayMaximum(messages))
 	for v := range messages {
 		msg := messages[v]
-		for i := 0; i < len(result); i++ {
+		vals := len(result)
+		if len(msg) < vals {
+			return "", errors.New("INCOMPLETE MESSAGE!")
+		}
+		for i := 0; i < vals; i++ {
 			if len(msg[i]) > 0 {
 				if len(result[i]) > 0 && result[i] != msg[i] {
 					fmt.Printf("ERROR Message missmatch: [%s - %s]", result[i], msg[i])
